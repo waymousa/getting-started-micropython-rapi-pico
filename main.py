@@ -16,8 +16,8 @@ wifi_password = constants.WIFI_PASSWORD
 aws_endpoint = b'ah9frbb7pxug4-ats.iot.eu-west-1.amazonaws.com'
 
 #If you followed the blog, these names are already set.
-thing_name = "RaPi-Pico-2040"
-client_id = "RaPi-Pico-2040-Client"
+thing_name = constants.AWS_IOT_THING_NAME
+client_id = constants.AWS_IOT_CLIENT_ID
 private_key = "cert/private.key.der"
 private_cert = "cert/certificate.crt.der"
 
