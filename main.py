@@ -4,10 +4,11 @@ import ujson
 import machine
 import network
 from umqtt.robust import MQTTClient
+import utils.constants as constants
 
 #Enter your wifi SSID and password below.
-wifi_ssid = "swaym_mobile_wifi"
-wifi_password = "Piaggio!2"
+wifi_ssid = constants.WIFI_SSID
+wifi_password = constants.WIFI_PASSWORD
 
 #Enter your AWS IoT endpoint. You can find it in the Settings page of
 #your AWS IoT Core console. 
