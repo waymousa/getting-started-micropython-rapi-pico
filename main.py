@@ -13,13 +13,13 @@ wifi_password = constants.WIFI_PASSWORD
 #Enter your AWS IoT endpoint. You can find it in the Settings page of
 #your AWS IoT Core console. 
 #https://docs.aws.amazon.com/iot/latest/developerguide/iot-connect-devices.html 
-aws_endpoint = b'ah9frbb7pxug4-ats.iot.eu-west-1.amazonaws.com'
+aws_endpoint = constants.AWS_IOT_CORE_HOST
 
 #If you followed the blog, these names are already set.
 thing_name = constants.AWS_IOT_THING_NAME
 client_id = constants.AWS_IOT_CLIENT_ID
-private_key = "cert/private.key.der"
-private_cert = "cert/certificate.crt.der"
+private_key = constants.AWS_IOT_DEVICE_KEY
+private_cert = constants.AWS_IOT_DEVICE_CERT
 
 #Read the files used to authenticate to AWS IoT Core
 with open(private_key, 'rb') as f:
