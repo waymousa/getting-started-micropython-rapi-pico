@@ -35,7 +35,7 @@ class MQTTClient(simple.MQTTClient):
             self.reconnect()
 
     def wait_msg(self):
-        print("robust.wait_msg called")
+        #print("robust.wait_msg called")
         while 1:
             try:
                 return super().wait_msg()
@@ -44,12 +44,12 @@ class MQTTClient(simple.MQTTClient):
             self.reconnect()
 
     def check_msg(self, attempts=2):
-        print("robust.check_msg called")
+        #print("robust.check_msg called")
         while attempts:
-            print("calling setblocking")
+            #print("calling setblocking")
             self.sock.setblocking(False)
             try:
-                print("calling super.wait_msg")
+                #print("calling super.wait_msg")
                 return super().wait_msg()
             except OSError as e:
                 self.log(False, e)

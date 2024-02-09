@@ -176,9 +176,9 @@ class MQTTClient:
     # set by .set_callback() method. Other (internal) MQTT
     # messages processed internally.
     def wait_msg(self):
-        print("simple.wait_msg called")
+        #print("simple.wait_msg called")
         res = self.sock.read(1)
-        print(res)
+        #print(res)
         self.sock.setblocking(True)
         if res is None:
             return None
@@ -192,7 +192,7 @@ class MQTTClient:
         if op & 0xF0 != 0x30:
             return op
         sz = self._recv_len()
-        print("simple.wait_msg line 195")
+        #print("simple.wait_msg line 195")
         topic_len = self.sock.read(2)
         topic_len = (topic_len[0] << 8) | topic_len[1]
         topic = self.sock.read(topic_len)
@@ -201,11 +201,11 @@ class MQTTClient:
             pid = self.sock.read(2)
             pid = pid[0] << 8 | pid[1]
             sz -= 2
-        print("simple.wait_msg line 204")
+        #print("simple.wait_msg line 204")
         msg = self.sock.read(sz)
-        print("simple.wait_msg line 206")
+        #print("simple.wait_msg line 206")
         self.cb(topic, msg)
-        print("simple.wait_msg line 208")
+        #print("simple.wait_msg line 208")
         if op & 6 == 2:
             pkt = bytearray(b"\x40\x02\0\0")
             struct.pack_into("!H", pkt, 2, pid)
@@ -218,6 +218,6 @@ class MQTTClient:
     # If not, returns immediately with None. Otherwise, does
     # the same processing as wait_msg.
     def check_msg(self):
-        print("simple.check_msg called")
+        #print("simple.check_msg called")
         self.sock.setblocking(False)
         return self.wait_msg()

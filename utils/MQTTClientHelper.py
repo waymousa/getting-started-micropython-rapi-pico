@@ -29,16 +29,16 @@ class MQTTClientHelper:
         print(message)
         
     def subscribe(self, topic, msg):
-        print("Message received...")
+        print("Receiving message...")
         message = ujson.loads(msg)
         print(topic, message)
         if message['state']['led']:
-            print("mqttclienthelper.subscribe setting led")
+            #print("mqttclienthelper.subscribe setting led")
             self.led.led_state(message)
         print("Done")
     
     def check_msg(self):
-        print("mqttclienthelper.check_msg called")
+        #print("mqttclienthelper.check_msg called")
         try:
             self.mqtt.check_msg()
         except Exception as err:
