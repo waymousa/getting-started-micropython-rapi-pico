@@ -5,6 +5,7 @@ import machine
 import network
 from umqtt.robust import MQTTClient
 import utils.constants as constants
+from utils.mqttclienthelper import MQTTClientHelper
 
 #Enter your wifi SSID and password below.
 wifi_ssid = constants.WIFI_SSID
@@ -76,18 +77,23 @@ def led_state(message):
 #We use our helper function to connect to AWS IoT Core.
 #The callback function mqtt_subscribe is what will be called if we 
 #get a new message on topic_sub.
+'''
 try:
     mqtt = mqtt_connect()
     mqtt.set_callback(mqtt_subscribe)
     mqtt.subscribe(topic_sub)
 except:
     print("Unable to connect to MQTT.")
+'''
 
+shaddowClient = MQTTClientHelper(client_id=client_id, endpoint=aws_endpoint, sslp=ssl_params, pub_topic=topic_pub, sub_topic=topic_sub)
+shaddowClient.connect()
 
 while True:
 #Check for messages.
     try:
-        mqtt.check_msg()
+        shaddowClient.check_msg()
+        #mqtt.check_msg()
     except:
         print("Unable to check for messages.")
 
@@ -109,7 +115,8 @@ while True:
 
 #Using the message above, the device shadow is updated.
     try:
-        mqtt_publish(client=mqtt, message=mesg)
+        shaddowClient.publish(mesg)
+        #mqtt_publish(client=mqtt, message=mesg)
     except:
         print("Unable to publish message.")
 
