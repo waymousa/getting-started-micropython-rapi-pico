@@ -3,6 +3,7 @@ import time
 import ujson
 import machine
 import network
+import uasyncio as asyncio
 from umqtt.robust import MQTTClient
 import utils.constants as constants
 from mqttclienthelper import MQTTClientHelper
@@ -35,14 +36,23 @@ if not wlan.isconnected():
 shaddowClient = MQTTClientHelperFactory.create("main")
 shaddowClient.connect()
 
-while True:
-#Check for messages.
-    try:
-        shaddowClient.check_msg()
-    except:
-        print("Unable to check for messages.")
+# Coroutine: blink on a timer
+async def pollIoT():
+    print("Task_pollIoT started")
+    while True:
+        print("Polling IoT core")
+        try:
+            print("Running check_msg")
+            shaddowClient.check_msg()
+        except:
+            print("Task_pollIoT Exception: Unable to check for messages.")
+        await asyncio.sleep_ms(1000)
 
-    mesg = ujson.dumps({
+async def updateIoT():
+    print("Task_updateIoT started")
+    while True:
+        print("Task_updateIoT running")
+        mesg = ujson.dumps({
         "state":{
             "reported": {
                 "device": {
@@ -57,13 +67,34 @@ while True:
             }
         }
     })
+        try:
+            shaddowClient.publish(mesg)
+        except:
+            print("Task_updateIoT Exception: Unable to publish message.")
+        await asyncio.sleep_ms(10000)
 
-#Using the message above, the device shadow is updated.
-    try:
-        shaddowClient.publish(mesg)
-    except:
-        print("Unable to publish message.")
+async def memrep():
+    print("Task_memrep started")
+    while True:
+        print("Task_memrep running report")
+        micropython.mem_info()
+        await asyncio.sleep(20)
+        
+async def memclear():
+    print("Task_memclear started")
+    while True:
+        print("Task_memclear running GC")
+        gc.collect()
+        gc.threshold(gc.mem_free() // 4 + gc.mem_alloc())
+        await asyncio.sleep(25)
+    
+async def main():
+    print("Task_main started")
+    tasks = [asyncio.create_task(updateIoT()), \
+             asyncio.create_task(pollIoT()), \
+             asyncio.create_task(memrep()), \
+             asyncio.create_task(memclear())]
+    res = await asyncio.gather(*tasks, return_exceptions=True)
 
-#Wait for 10 seconds before checking for messages and publishing a new update.
-    print("Sleep for 10 seconds")
-    time.sleep(10)
+print("Lunching task scheduler")
+asyncio.run(main())
