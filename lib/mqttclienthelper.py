@@ -1,9 +1,10 @@
 from umqtt.robust import MQTTClient
 import utils.constants as constants
-from utils.led import led
+from led import led
 import ujson
+from imqttclienthelper import IMQTTClientHelper
 
-class MQTTClientHelper:
+class MQTTClientHelper(IMQTTClientHelper):
     
     def __init__(self, client_id, endpoint, sslp, pub_topic, sub_topic):
         self.client_id = client_id

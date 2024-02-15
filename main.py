@@ -5,7 +5,8 @@ import machine
 import network
 from umqtt.robust import MQTTClient
 import utils.constants as constants
-from utils.mqttclienthelper import MQTTClientHelper
+from mqttclienthelper import MQTTClientHelper
+from mqttclienthelperfactory import MQTTClientHelperFactory
 
 #Enter your wifi SSID and password below.
 wifi_ssid = constants.WIFI_SSID
@@ -86,7 +87,10 @@ except:
     print("Unable to connect to MQTT.")
 '''
 
-shaddowClient = MQTTClientHelper(client_id=client_id, endpoint=aws_endpoint, sslp=ssl_params, pub_topic=topic_pub, sub_topic=topic_sub)
+#shaddowClient = MQTTClientHelper(client_id=client_id, endpoint=aws_endpoint, sslp=ssl_params, pub_topic=topic_pub, sub_topic=topic_sub)
+#shaddowClient.connect()
+
+shaddowClient = MQTTClientHelperFactory.create("main")
 shaddowClient.connect()
 
 while True:
