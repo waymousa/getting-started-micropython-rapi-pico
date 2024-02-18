@@ -41,10 +41,11 @@ if not wlan.isconnected():
 '''
 
 
-#shaddowClient = MQTTClientHelperFactory.create("main")
+
 #shaddowClient.connect()
 
 # Coroutine: blink on a timer
+'''
 async def pollIoT():
     print("Task_pollIoT started")
     while True:
@@ -55,6 +56,7 @@ async def pollIoT():
         except:
             print("Task_pollIoT Exception: Unable to check for messages.")
         await asyncio.sleep_ms(1000)
+'''
 
 async def updateIoT():
     print("Task_updateIoT started")
@@ -99,6 +101,7 @@ async def memclear():
 async def main():
     log.debug("Task_main started.")
     wifiHelper = WiFiHelper()
+    shaddowClient = MQTTClientHelperFactory.create("main")
     '''
     tasks = [asyncio.create_task(updateIoT()), \
              asyncio.create_task(pollIoT()), \

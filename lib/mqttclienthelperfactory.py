@@ -1,6 +1,9 @@
 from mqttclienthelper import MQTTClientHelper
 import utils.constants as constants
 from umqtt.robust import MQTTClient
+from logging import logging
+
+log = logging.getLogger(__name__)
 
 aws_endpoint = constants.AWS_IOT_CORE_HOST
 thing_name = constants.AWS_IOT_THING_NAME
@@ -21,7 +24,7 @@ class MQTTClientHelperFactory:
     def create(client_to_create):
         "A static method to create a new MQTT Client Helper"
         if client_to_create == 'main':
-            print("MQTTClientHelperFactory.create(main)")
+            log.debug("Creating MQTTClientHelper")
             topic_pub = "$aws/things/" + thing_name + "/shadow/update"
             topic_sub = "$aws/things/" + thing_name + "/shadow/update/delta"
             mqtt = MQTTClientHelper(client_id=client_id, \
