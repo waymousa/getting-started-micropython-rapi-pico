@@ -8,10 +8,15 @@ from umqtt.robust import MQTTClient
 import utils.constants as constants
 from mqttclienthelper import MQTTClientHelper
 from mqttclienthelperfactory import MQTTClientHelperFactory
+from wifihelper import WiFiHelper
+from logging import logging
+
+logging.basicConfig(level=logging.DEBUG)
+log = logging.getLogger(__name__)
 
 #Enter your wifi SSID and password below.
-wifi_ssid = constants.WIFI_SSID
-wifi_password = constants.WIFI_PASSWORD
+#wifi_ssid = constants.WIFI_SSID
+#wifi_password = constants.WIFI_PASSWORD
 
 #If you followed the blog, these names are already set.
 client_id = constants.AWS_IOT_CLIENT_ID
@@ -22,6 +27,7 @@ led = machine.Pin("LED", machine.Pin.OUT)
 info = os.uname()
 
 #Connect to the wireless network
+'''
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
 if not wlan.isconnected():
@@ -32,9 +38,11 @@ if not wlan.isconnected():
 
     print('Connection successful')
     print('Network config:', wlan.ifconfig())
+'''
 
-shaddowClient = MQTTClientHelperFactory.create("main")
-shaddowClient.connect()
+
+#shaddowClient = MQTTClientHelperFactory.create("main")
+#shaddowClient.connect()
 
 # Coroutine: blink on a timer
 async def pollIoT():
@@ -87,14 +95,19 @@ async def memclear():
         gc.collect()
         gc.threshold(gc.mem_free() // 4 + gc.mem_alloc())
         await asyncio.sleep(25)
-    
+         
 async def main():
-    print("Task_main started")
+    log.debug("Task_main started.")
+    wifiHelper = WiFiHelper()
+    '''
     tasks = [asyncio.create_task(updateIoT()), \
              asyncio.create_task(pollIoT()), \
              asyncio.create_task(memrep()), \
              asyncio.create_task(memclear())]
     res = await asyncio.gather(*tasks, return_exceptions=True)
+    '''
+    while True:
+        await asyncio.sleep_ms(100)
 
-print("Lunching task scheduler")
+log.info("Lunching task scheduler.")
 asyncio.run(main())
