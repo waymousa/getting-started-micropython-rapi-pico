@@ -91,3 +91,4 @@ class Queue:
     async def join(self): # Wait for join event
         await self._jnevt.wait()
 
+

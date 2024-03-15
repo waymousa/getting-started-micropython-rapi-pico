@@ -1,7 +1,8 @@
 from iwifihelper import IWifiHelper
 import utils.constants as constants
 import network
-import uasyncio as asyncio
+import asyncio
+#import uasyncio as asyncio
 from logging import logging
 
 log = logging.getLogger(__name__)

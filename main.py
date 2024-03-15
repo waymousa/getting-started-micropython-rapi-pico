@@ -3,20 +3,21 @@ import time
 import ujson
 import machine
 import network
-import uasyncio as asyncio
+import asyncio
 from umqtt.robust import MQTTClient
 import utils.constants as constants
-from mqttclienthelper import MQTTClientHelper
-from mqttclienthelperfactory import MQTTClientHelperFactory
+from mqttagent import MQTTAgent
+from mqttagentfactory import MQTTAgentFactory
 from wifihelper import WiFiHelper
 from logging import logging
+from router import Router
+from shaddowupdater import ShaddowUpdater
+from primitives.queue import Queue
+from button import Button
+from led import LED
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
-
-#Enter your wifi SSID and password below.
-#wifi_ssid = constants.WIFI_SSID
-#wifi_password = constants.WIFI_PASSWORD
 
 #If you followed the blog, these names are already set.
 client_id = constants.AWS_IOT_CLIENT_ID
@@ -25,38 +26,6 @@ client_id = constants.AWS_IOT_CLIENT_ID
 #The sensor and LED are built into the board, and no external connections are required.
 led = machine.Pin("LED", machine.Pin.OUT)
 info = os.uname()
-
-#Connect to the wireless network
-'''
-wlan = network.WLAN(network.STA_IF)
-wlan.active(True)
-if not wlan.isconnected():
-    print('Connecting to network...')
-    wlan.connect(wifi_ssid, wifi_password)
-    while not wlan.isconnected():
-        pass
-
-    print('Connection successful')
-    print('Network config:', wlan.ifconfig())
-'''
-
-
-
-#shaddowClient.connect()
-
-# Coroutine: blink on a timer
-'''
-async def pollIoT():
-    print("Task_pollIoT started")
-    while True:
-        print("Polling IoT core")
-        try:
-            print("Running check_msg")
-            shaddowClient.check_msg()
-        except:
-            print("Task_pollIoT Exception: Unable to check for messages.")
-        await asyncio.sleep_ms(1000)
-'''
 
 async def updateIoT():
     print("Task_updateIoT started")
@@ -100,15 +69,13 @@ async def memclear():
          
 async def main():
     log.debug("Task_main started.")
+    led = LED("LED")
+    router = Router
     wifiHelper = WiFiHelper()
-    shaddowClient = MQTTClientHelperFactory.create("main")
-    '''
-    tasks = [asyncio.create_task(updateIoT()), \
-             asyncio.create_task(pollIoT()), \
-             asyncio.create_task(memrep()), \
-             asyncio.create_task(memclear())]
-    res = await asyncio.gather(*tasks, return_exceptions=True)
-    '''
+    await asyncio.sleep_ms(5000)
+    shaddowClient = MQTTAgentFactory.create("main", router)
+    shaddowUpdater = ShaddowUpdater(shaddowClient, led)
+    button = Button(16,led)
     while True:
         await asyncio.sleep_ms(100)
 

@@ -1,4 +1,4 @@
-from mqttclienthelper import MQTTClientHelper
+from mqttagent import MQTTAgent
 import utils.constants as constants
 from umqtt.robust import MQTTClient
 from logging import logging
@@ -18,21 +18,21 @@ with open(private_cert, 'rb') as f:
 
 ssl_params = {"key":key, "cert":cert, "server_side":False}
 
-class MQTTClientHelperFactory:
+class MQTTAgentFactory:
     
     @staticmethod
-    def create(client_to_create):
-        "A static method to create a new MQTT Client Helper"
+    def create(client_to_create, router):
+        "A static method to create a new MQTTAgent"
         if client_to_create == 'main':
-            log.debug("Creating MQTTClientHelper")
+            log.debug("Creating MQTTAgent")
             topic_pub = "$aws/things/" + thing_name + "/shadow/update"
             topic_sub = "$aws/things/" + thing_name + "/shadow/update/delta"
-            mqtt = MQTTClientHelper(client_id=client_id, \
+            mqtt = MQTTAgent(client_id=client_id, \
                               endpoint=aws_endpoint, \
                               pub_topic = topic_pub, \
                               sub_topic = topic_sub, \
-                              sslp=ssl_params)
-            #mqtt.connect()
+                              sslp=ssl_params,
+                              router=router)
             return mqtt
         
         return None
