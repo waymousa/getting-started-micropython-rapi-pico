@@ -101,6 +101,7 @@ async def memclear():
 async def main():
     log.debug("Task_main started.")
     wifiHelper = WiFiHelper()
+    await asyncio.sleep(10)
     shaddowClient = MQTTClientHelperFactory.create("main")
     '''
     tasks = [asyncio.create_task(updateIoT()), \

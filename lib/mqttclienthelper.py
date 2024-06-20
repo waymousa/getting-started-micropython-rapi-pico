@@ -5,6 +5,9 @@ import ujson
 from imqttclienthelper import IMQTTClientHelper
 from logging import logging
 import uasyncio as asyncio
+import time
+import machine
+import os
 
 log = logging.getLogger(__name__)
 
@@ -27,6 +30,8 @@ class MQTTClientHelper(IMQTTClientHelper):
         while True:
             self.check_msg()
             await asyncio.sleep_ms(constants.AWS_IOT_MQTT_RECHECK_RATE_MS)
+            self.publish()
+            await asyncio.sleep_ms(constants.AWS_IOT_MQTT_RECHECK_RATE_MS)
         
     def connect(self):        
         log.info("Connecting to AWS IoT...")
@@ -38,7 +43,28 @@ class MQTTClientHelper(IMQTTClientHelper):
     
     def publish(self, message=''):
         log.info("Publishing message...")
-        self.mqtt.publish(self.pub_topic, message)
+        led = machine.Pin("LED", machine.Pin.OUT)
+        info = os.uname()
+        message = ujson.dumps({
+        "state":{
+            "reported": {
+                "device": {
+                    "client": self.client_id,
+                    "uptime": time.ticks_ms(),
+                    "hardware": info[0],
+                    "firmware": info[2]
+                },
+                "led": {
+                    "onboard": led.value()
+                }
+            }
+        }
+        })
+        
+        try:
+            self.mqtt.publish(self.pub_topic, message)
+        except:
+            print("Task_updateIoT Exception: Unable to publish message.")
         log.info(message)
         
     def subscribe(self, topic, msg):
