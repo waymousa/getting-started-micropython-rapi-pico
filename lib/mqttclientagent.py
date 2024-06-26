@@ -5,9 +5,6 @@ import ujson
 from imqttclientagent import IMQTTClientAgent
 from logging import logging
 import uasyncio as asyncio
-import time
-import machine
-import os
 from carstate import CarStateManager
 
 log = logging.getLogger(__name__)
@@ -22,7 +19,6 @@ class MQTTClientAgent(IMQTTClientAgent):
         self.sub_topic = sub_topic
         self.agent_id = agent_id
         self.observer = observer
-        self.led = led("LED")
         self.mqtt = MQTTClient(client_id=self.client_id, server=self.endpoint, port=8883, keepalive=1200, ssl=True, ssl_params=self.sslp)
         self.connect()
         log.debug('Starting task...')
@@ -48,25 +44,7 @@ class MQTTClientAgent(IMQTTClientAgent):
         log.info("%s MQTTClientAgent publishing message...", self.agent_id)
         
         message = self.observer.get_state()
-        
-        #led = machine.Pin("LED", machine.Pin.OUT)
-        #info = os.uname()
-        #message = ujson.dumps({
-        #"state":{
-        #    "reported": {
-        #        "device": {
-        #            "client": self.client_id,
-        #            "uptime": time.ticks_ms(),
-        #            "hardware": info[0],
-        #            "firmware": info[2]
-        #        },
-        #        "led": {
-        #            "onboard": led.value()
-        #        }
-        #    }
-        #}
-        #})
-        
+            
         try:
             self.mqtt.publish(self.pub_topic, message)
         except:
@@ -78,10 +56,7 @@ class MQTTClientAgent(IMQTTClientAgent):
         message = ujson.loads(msg)
         log.info(topic, message)
         self.observer.set_state(message)
-        #if message['state']['led']:
-            #print("mqttclienthelper.subscribe setting led")
-            #self.led.led_state(message)
-        log.info("%s MQTTClientAgent message done.", self.agent_id)
+        log.debug("%s MQTTClientAgent message done.", self.agent_id)
     
     def check_msg(self):
         log.info("%s MQTTClientAgent Checking for messages.", self.agent_id)
