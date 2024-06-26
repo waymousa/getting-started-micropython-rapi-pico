@@ -1,7 +1,9 @@
 DEBUG_LEVEL="logging.DEBUG"
 
-WIFI_SSID="clarmouth-4"
-WIFI_PASSWORD="Piaggio727411!"
+#WIFI_SSID="clarmouth-4"
+#WIFI_PASSWORD="Piaggio727411!"
+WIFI_SSID="Sam iphone"
+WIFI_PASSWORD="zxtfa3fu25g6u"
 WIFI_RECHECK_RATE_MS=10000
 
 AWS_IOT_CLIENT_ID = "RaPi-Pico-2040-Client"

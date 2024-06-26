@@ -11,4 +11,8 @@ class led():
     def led_state(self, message):
         log.debug("led.led_state called")
         self.led.value(message['state']['led']['onboard'])
+        
+    def led_getstate(self):
+        log.debug("led.led_getstate called")
+        return self.led.value()
     

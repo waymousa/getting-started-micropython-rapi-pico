@@ -1,6 +1,6 @@
 from abc.abc import abstractmethod
 
-class IMQTTClientHelper():
+class IMQTTClientAgent():
     "An abstract class to for the MQTTClientHelper"
     
     @staticmethod

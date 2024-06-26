@@ -6,10 +6,11 @@ import network
 import uasyncio as asyncio
 from umqtt.robust import MQTTClient
 import utils.constants as constants
-from mqttclienthelper import MQTTClientHelper
-from mqttclienthelperfactory import MQTTClientHelperFactory
+from mqttclientagent import MQTTClientAgent
+from mqttclientagentfactory import MQTTClientAgentFactory
 from wifihelper import WiFiHelper
 from logging import logging
+from carstate import CarStateManager
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
@@ -102,7 +103,10 @@ async def main():
     log.debug("Task_main started.")
     wifiHelper = WiFiHelper()
     await asyncio.sleep(10)
-    shaddowClient = MQTTClientHelperFactory.create("main")
+    
+    car_state = CarStateManager(client_id=client_id)
+    shaddowClient = MQTTClientAgentFactory.create(client_to_create="shaddow", observer=car_state)
+    
     '''
     tasks = [asyncio.create_task(updateIoT()), \
              asyncio.create_task(pollIoT()), \
