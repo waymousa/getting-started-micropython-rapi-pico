@@ -11,6 +11,9 @@ class CarStateManager():
     def __init__(self, client_id):
         log.debug("CarStateManager init.")
         self.led = led("LED")
+        self.speed = 0
+        self.brake = 0
+        self.lane_change = 0
         self.client_id = client_id
         
     def set_state(self, message):
@@ -18,6 +21,9 @@ class CarStateManager():
         if message['state']['led']:
             log.debug("Setting car LED state")
             self.led.led_state(message)
+        #if message['state']['speed']:
+        #    log.debug("Setting car speed")
+        #    self.speed = message
         
     def get_state(self):
         log.debug("Getting car state")
@@ -33,6 +39,8 @@ class CarStateManager():
                 },
                 "led": {
                     "onboard": self.led.led_getstate()
+                #},
+                #"speed": self.speed
                 }
             }
         }
