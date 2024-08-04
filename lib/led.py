@@ -9,10 +9,10 @@ class led():
         self.led = machine.Pin(pin, machine.Pin.OUT)
         
     def led_state(self, message):
-        log.debug("led.led_state called")
-        self.led.value(message['state']['led']['onboard'])
+        log.debug("led.led_state called.")
+        self.led.value(message)
         
     def led_getstate(self):
-        log.debug("led.led_getstate called")
+        log.debug("led.led_getstate called.")
         return self.led.value()
     

@@ -44,24 +44,28 @@ class MQTTClientAgent(IMQTTClientAgent):
         log.info("%s MQTTClientAgent publishing message...", self.agent_id)
         
         message = self.observer.get_state()
-            
+        
+        log.info(message)
+        
         try:
             self.mqtt.publish(self.pub_topic, message)
         except:
             print("%s MQTTClientAgent Exception: Unable to publish message.", self.agent_id)
-        log.info(message)
+        
         
     def subscribe(self, topic, msg):
         log.info("%s MQTTClientAgent receiving message...", self.agent_id)
         message = ujson.loads(msg)
         log.info(topic, message)
-        self.observer.set_state(message)
         log.debug("%s MQTTClientAgent message done.", self.agent_id)
+        log.debug("%s MQTTClientAgent calling observer.", self.agent_id)
+        self.observer.set_state(message)        
     
     def check_msg(self):
-        log.info("%s MQTTClientAgent Checking for messages.", self.agent_id)
+        log.info("%s MQTTClientAgent Checking for messages...", self.agent_id)
         try:
             self.mqtt.check_msg()
         except Exception as err:
             log.error(f"check_msg Exception: Unexpected {err=}, {type(err)=}")
+        log.info("%s MQTTClientAgent completed checking for messages.", self.agent_id)
         
